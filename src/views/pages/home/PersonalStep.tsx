@@ -59,8 +59,10 @@ const StepPersonalDetails = ({ steps, isEdit, isLoading, onNext }: any) => {
     const { settings } = useSettings()
     console.log(settings.direction, themeConfig.direction)
     const maritalStatusArray = ['مجرد', 'متاهل', 'متارکه']
+    const housingStatusArray = ['استیجاری', 'شخصی']
     const theme = useTheme()
     const [maritalStatus, setMaritalStatus] = useState<string[]>([])
+    const [housingStatus, setHousingStatus] = useState<string[]>([])
     const { data, setData, activeStep, setActiveStep } = useContext<any>(UserContext);
     console.log(data?.data?.personalData, data?.data, data, steps)
 
@@ -290,11 +292,11 @@ const StepPersonalDetails = ({ steps, isEdit, isLoading, onNext }: any) => {
                             </RHFSelect>
                         </Grid>
                         <Grid item xs={12} md={6}>
-                            <RHFSelect name={'maritalStatus'} label='وضعیت مسکن'
+                            <RHFSelect name={'housingStatus'} label='وضعیت مسکن'
                                 SelectProps={{
                                     multiple: false,
-                                    value: maritalStatus,
-                                    onChange: (e: any) => handleChange(e as SelectChangeEvent<typeof maritalStatus>),
+                                    value: housingStatus,
+                                    onChange: (e: any) => handleChange(e as SelectChangeEvent<typeof housingStatus>),
                                     renderValue: (selected: any) => (
                                         <Box
                                             sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, }}
@@ -305,9 +307,9 @@ const StepPersonalDetails = ({ steps, isEdit, isLoading, onNext }: any) => {
                                         </Box>
                                     )
                                 }}>
-                                {maritalStatusArray.map((maritalStatus: any) => (
-                                    <MenuItem key={maritalStatus} value={maritalStatus} sx={{ flexDirection: 'row-reverse' }}>
-                                        {maritalStatus}
+                                {housingStatusArray.map((housingStatus: any) => (
+                                    <MenuItem key={housingStatus} value={housingStatus} sx={{ flexDirection: 'row-reverse' }}>
+                                        {housingStatus}
                                     </MenuItem>
                                 ))}
                             </RHFSelect>

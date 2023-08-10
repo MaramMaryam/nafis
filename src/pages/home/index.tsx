@@ -5,12 +5,14 @@ import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import StepPersonalDetails from 'src/views/pages/home/PersonalStep'
+import CompeleteStep from 'src/views/pages/home/CompeleteStep'
 
 const Home = () => {
   return (
     <Grid container spacing={6} >
       <Grid item xs={12}>
         <StepPersonalDetails />
+        <CompeleteStep />
         {/* <Card>
           <CardHeader sx={{ '& .css-x8z8fw-MuiTypography-root': { color: 'red' } }} title='🚀مشخصات فردی'></CardHeader>
           <CardContent>
