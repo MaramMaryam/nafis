@@ -27,13 +27,14 @@ import TableBasic from 'src/@core/components/tables/BasicTables'
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
 import CustomTable from 'src/@core/components/tables/BasicTables'
 import { GridProps } from '@mui/system'
+import { preventOverflow } from '@popperjs/core'
 
 
 const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
     const theme = useTheme()
     console.log(allPosts)
     const { data, setData, activeStep, setActiveStep } = useContext<any>(UserContext);
-    console.log(data?.data?.personalData, data?.data, data, steps)
+    console.log( data?.data, data, steps)
     const [compeleteData, setCompeleteData] = useState<any>([])
 
       useEffect(() => {
@@ -68,23 +69,45 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
     const rows: GridRowsProp = [
         {
             // id: 1,
-            col1: <RHFTextField name={'name'} />,
-            col2: <RHFTextField name={'nesbat'} />,
-            col3: <RHFTextField name={'job'} />,
-            col4: <RHFTextField name={'address'} />,
-            col5: <RHFTextField name={'tel'} />,
+            name: <RHFTextField name={'name'} />,
+            nesbat: <RHFTextField name={'nesbat'} />,
+            job: <RHFTextField name={'job'} />,
+            address: <RHFTextField name={'address'} />,
+            tel: <RHFTextField name={'tel'} />,
             col6: <>{renderFooter()}</>,
         },
     ];
     const columns: GridColDef[] = [
-        { field: 'col1', headerName: 'نام و نام خانوادگی', width: 110 },
-        { field: 'col2', headerName: 'نسبت', width: 110 },
-        { field: 'col3', headerName: 'شغل', width: 110 },
-        { field: 'col4', headerName: 'آدرس محل سکونت', width: 110 },
-        { field: 'col5', headerName: 'تلفن', width: 110 },
+        { field: 'name', headerName: 'نام و نام خانوادگی', width: 110 },
+        { field: 'nesbat', headerName: 'نسبت', width: 110 },
+        { field: 'job', headerName: 'شغل', width: 110 },
+        { field: 'address', headerName: 'آدرس محل سکونت', width: 110 },
+        { field: 'tel', headerName: 'تلفن', width: 110 },
         { field: 'col6', headerName: 'عملیات', width: 110 },
     ];
-
+    const [row, setRow] = useState(rows);
+    // data?.data
+    const srows:any = data?.data?.map((item: any) => {
+        return {
+            name: item?.name,
+            nesbat: item?.nesbat,
+            job: item?.job ?? '',
+            address: item?.address ?? '',
+            tel: item?.tel ?? '',
+            col6: <>{renderFooter()}</>,
+        }
+    });
+      const srodws: GridRowsProp = [
+        {
+            // id: 1,
+            name: <RHFTextField name={'name'} />,
+            nesbat: <RHFTextField name={'nesbat'} />,
+            job: <RHFTextField name={'job'} />,
+            address: <RHFTextField name={'address'} />,
+            tel: <RHFTextField name={'tel'} />,
+            col6: <>{renderFooter()}</>,
+        },
+    ];
     const showErrors = (field: string, valueLen: number, min: number) => {
         if (valueLen === 0) {
             return `${field} field is required`
@@ -143,32 +166,12 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
                 data: compeleteData
             }),
           });
-        //   res = await res.json();
+          if(res.status===200){
+            // addRow((prev:any)=>({ ...prev, compeleteData}))
+            setRow((prevRows:any) => [...prevRows, compeleteData]); 
+            // setData((prev:any)=>({ ...prev, compeleteData}))
+        }
           console.log(res.status)
-        // try {
-        //     await fetch('/api/createProfile', {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //         },
-        //         body: JSON.stringify({
-        //             step: steps[0].id,
-        //             data: personalData,
-        //             steps,
-        //             last_update
-        //         }),
-        //     });
-        //     setData((prev: any) => ({
-        //         ...prev, ...data,
-        //         step: steps[0].id,
-        //         step0: personalData,
-        //         last_update,
-        //         steps
-        //     }))
-        //     onNext();
-        // } catch (error) {
-        //     console.error('Error saving data:', error);
-        // }
     };
 
     const Accordion = styled(MuiAccordion)<AccordionProps>(({ theme }) => ({
@@ -264,6 +267,7 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
             }
         }
     }))
+
     return (
         <Accordion expanded={expanded === 'panel2'} onChange={handleChangeA('panel2')}>
             <AccordionSummary
@@ -288,10 +292,16 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
                     </Typography>
                 </Box>
                 <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-                    <CustomTable columns={columns} rows={rows} />
-                    {
-                        compeleteData && (<CustomTable />)
-                    }
+                    <CustomTable columns={columns} rows={row} />
+                    {/* {
+                        data && (
+                            // data?.data?.map((items:any, index:number)=> (
+                                // <>{items.name}</>
+                                <CustomTable columns={columns} rows={srows} />
+                            // ))
+                        
+                        )
+                    } */}
                 </FormProvider>
             </AccordionDetails>
         </Accordion>
