@@ -8,7 +8,7 @@ export default function CustomTable({ columns, rows }: any) {
             <Table border={1} sx={{border: '1px solid lightgrey'}}>
                 <TableHead>
                     <TableRow>
-                        {columns.map((column: any) => (
+                        {columns?.map((column: any) => (
                             <TableCell key={column.field} align='right'>
                                 {column.headerName}
                             </TableCell>
@@ -17,11 +17,11 @@ export default function CustomTable({ columns, rows }: any) {
                 </TableHead>
 
                 <TableBody>
-                    {rows.map((row: any) => (
+                    {rows?.map((row: any) => (
                         <TableRow key={row.id}>
-                            {columns.map((column: any) => (
+                            {columns?.map((column: any) => (
                                 <TableCell key={column.field} align='right'>
-                                    {row[column.field]}
+                                    {row[column?.field]}
                                 </TableCell>
                             ))}
                         </TableRow>

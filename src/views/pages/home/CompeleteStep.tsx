@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { CustomRadioIconsData, CustomRadioIconsProps } from 'src/@core/components/custom-radio/types'
-import { Box, Divider } from '@mui/material'
+import { Box, CardContent, CardContentProps, Divider } from '@mui/material'
 import CustomChip from 'src/@core/components/mui/chip'
 import MenuItem from '@mui/material/MenuItem'
 import { SelectChangeEvent } from '@mui/material/Select'
@@ -26,15 +26,31 @@ import themeConfig from 'src/configs/themeConfig'
 import TableBasic from 'src/@core/components/tables/BasicTables'
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
 import CustomTable from 'src/@core/components/tables/BasicTables'
+import { GridProps } from '@mui/system'
 
 
-const CompeleteStep = ({ steps, isEdit, isLoading, onNext }: any) => {
-    const { settings } = useSettings()
-    console.log(settings.direction, themeConfig.direction)
+const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
     const theme = useTheme()
-    const [maritalStatus, setMaritalStatus] = useState<string[]>([])
+    console.log(allPosts)
     const { data, setData, activeStep, setActiveStep } = useContext<any>(UserContext);
     console.log(data?.data?.personalData, data?.data, data, steps)
+    const [compeleteData, setCompeleteData] = useState<any>([])
+
+      useEffect(() => {
+        async function getApiData() {
+            const res = await fetch('/api/getInfos', { method: 'GET' });
+            const data = await res.json();
+            if (data) {
+                setData((prev: any) => ({
+                    ...prev,
+                    data: data,
+                }))
+            }
+            console.log(data)
+        }
+        getApiData();
+    }, [setData]);
+
     const renderFooter = () => {
 
         return (
@@ -51,7 +67,7 @@ const CompeleteStep = ({ steps, isEdit, isLoading, onNext }: any) => {
     }
     const rows: GridRowsProp = [
         {
-            id: 1,
+            // id: 1,
             col1: <RHFTextField name={'name'} />,
             col2: <RHFTextField name={'nesbat'} />,
             col3: <RHFTextField name={'job'} />,
@@ -80,14 +96,14 @@ const CompeleteStep = ({ steps, isEdit, isLoading, onNext }: any) => {
     }
 
     const schema = yup.object().shape({
-        email: yup.string().email().required(),
-        lastName: yup
+        job: yup.string().required(),
+        name: yup
             .string()
-            .min(3, obj => showErrors('lastName', obj.value.length, obj.min))
+            .min(3, obj => showErrors('name', obj.value.length, obj.min))
             .required(),
-        firstName: yup
+        nesbat: yup
             .string()
-            .min(3, obj => showErrors('firstName', obj.value.length, obj.min))
+            .min(3, obj => showErrors('nesbat', obj.value.length, obj.min))
             .required()
     })
 
@@ -96,11 +112,11 @@ const CompeleteStep = ({ steps, isEdit, isLoading, onNext }: any) => {
         () => ({
             //   activeStep, 
             last_update,
-            email: '',
-            lastName: '',
-            firstName: '',
-            code: '',
-            bitrthDate: '',
+            name: '',
+            nesbat: '',
+            job: '',
+            address: '',
+            tel: '',
         }),
         []
     );
@@ -108,7 +124,7 @@ const CompeleteStep = ({ steps, isEdit, isLoading, onNext }: any) => {
     const methods = useForm({
         resolver: yupResolver(schema),
         defaultValues,
-        mode: "onChange"
+        mode: "all"
     });
 
     const {
@@ -116,9 +132,19 @@ const CompeleteStep = ({ steps, isEdit, isLoading, onNext }: any) => {
         formState: { isSubmitting, errors },
     } = methods
 
-    const onSubmit = async (personalData: any) => {
-        console.log(personalData)
-
+    const onSubmit = async (compeleteData: any) => {
+        console.log(compeleteData)
+        let res = await fetch("/api/infos", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                data: compeleteData
+            }),
+          });
+        //   res = await res.json();
+          console.log(res.status)
         // try {
         //     await fetch('/api/createProfile', {
         //         method: 'POST',
@@ -210,7 +236,34 @@ const CompeleteStep = ({ steps, isEdit, isLoading, onNext }: any) => {
     }
 
     const expandIcon = (value: string) => <Icon icon={expanded === value ? 'tabler:minus' : 'tabler:plus'} />
-
+    const RepeaterWrapper = styled(CardContent)<CardContentProps>(({ theme }) => ({
+        padding: theme.spacing(1),
+        '& .repeater-wrapper + .repeater-wrapper': {
+            marginTop: theme.spacing(8)
+        },
+        [theme.breakpoints.down('md')]: {
+            paddingTop: theme.spacing(10)
+        },
+        [theme.breakpoints.down('sm')]: {
+            padding: theme.spacing(6)
+        }
+    }))
+    const RepeatingContent = styled(Grid)<GridProps>(({ theme }) => ({
+        paddingRight: 0,
+        [theme.breakpoints.up('sm')]: {
+            display: 'flex',
+        },
+        '& .col-title': {
+            top: '-2.375rem',
+            position: 'absolute'
+        },
+        [theme.breakpoints.down('md')]: {
+            '& .col-title': {
+                top: '0',
+                position: 'relative'
+            }
+        }
+    }))
     return (
         <Accordion expanded={expanded === 'panel2'} onChange={handleChangeA('panel2')}>
             <AccordionSummary
@@ -236,6 +289,9 @@ const CompeleteStep = ({ steps, isEdit, isLoading, onNext }: any) => {
                 </Box>
                 <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
                     <CustomTable columns={columns} rows={rows} />
+                    {
+                        compeleteData && (<CustomTable />)
+                    }
                 </FormProvider>
             </AccordionDetails>
         </Accordion>
@@ -243,3 +299,17 @@ const CompeleteStep = ({ steps, isEdit, isLoading, onNext }: any) => {
 }
 
 export default CompeleteStep
+
+// export async function getServerSideProps(context:any) {
+//     let res = await fetch("http://localhost:3000/api/infos", {
+//       method: "GET",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//     });
+//     let allPosts = await res.json();
+  
+//     return {
+//       props: { allPosts },
+//     };
+//   }
