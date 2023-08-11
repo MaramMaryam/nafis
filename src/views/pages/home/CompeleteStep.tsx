@@ -35,41 +35,43 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
     console.log(allPosts)
     const { data, setData, activeStep, setActiveStep } = useContext<any>(UserContext);
     console.log( data?.data, data, steps)
-    const [compeleteData, setCompeleteData] = useState<any>([])
-
-      useEffect(() => {
-        async function getApiData() {
-            const res = await fetch('/api/getInfos', { method: 'GET' });
-            const data = await res.json();
-            if (data) {
-                setData((prev: any) => ({
-                    ...prev,
-                    data: data,
-                }))
-            }
-            console.log(data)
-        }
-        getApiData();
-    }, [setData]);
-
+    const [compeleteDatas, setCompeleteData] = useState<any>([])
+    // const addButton =(compeleteData:any)=> {
+    //     setRow((prevRows:any) => [...prevRows, srows]); 
+    // }
+    // const addButton = (newRow:any) => {
+    //     setRow([...row, newRow]);
+    //   }
     const renderFooter = () => {
 
         return (
             <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
                 <Button type='submit'
+                // onClick={addButton}
                     variant='contained'
                     color={'success'}
-
                 >
                     {'تایید'}
                 </Button>
             </Box>
         )
     }
+
+    const srows:GridRowsProp = data?.map((item: any) => {
+        return[ {
+            id: crypto.randomUUID(),
+            name: item?.name,
+            nesbat: item?.nesbat,
+            job: item?.job ?? '',
+            address: item?.address ?? '',
+            tel: item?.tel ?? '',
+            col6: <>{renderFooter()}</>,
+        }]
+    });
     const rows: GridRowsProp = [
         {
-            // id: 1,
-            name: <RHFTextField name={'name'} />,
+            id: crypto.randomUUID(),
+            name: <RHFTextField name={`name`} />,
             nesbat: <RHFTextField name={'nesbat'} />,
             job: <RHFTextField name={'job'} />,
             address: <RHFTextField name={'address'} />,
@@ -78,7 +80,7 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
         },
     ];
     const columns: GridColDef[] = [
-        { field: 'name', headerName: 'نام و نام خانوادگی', width: 110 },
+        { field: `name`, headerName: 'نام و نام خانوادگی', width: 110 },
         { field: 'nesbat', headerName: 'نسبت', width: 110 },
         { field: 'job', headerName: 'شغل', width: 110 },
         { field: 'address', headerName: 'آدرس محل سکونت', width: 110 },
@@ -86,28 +88,41 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
         { field: 'col6', headerName: 'عملیات', width: 110 },
     ];
     const [row, setRow] = useState(rows);
-    // data?.data
-    const srows:any = data?.data?.map((item: any) => {
-        return {
-            name: item?.name,
-            nesbat: item?.nesbat,
-            job: item?.job ?? '',
-            address: item?.address ?? '',
-            tel: item?.tel ?? '',
-            col6: <>{renderFooter()}</>,
+    // async function getApiData() {
+    //     const res = await fetch('/api/getInfos', { method: 'GET' });
+    //     const data = await res.json();
+    //     console.log(data)
+
+    //     if (data) {
+    //         setData((prev: any) => ({
+    //             ...prev,
+    //             data:data,
+    //     }))
+    //     setRow((prevRows:any) => [...prevRows, ...data]); 
+    //     }
+    //     console.log(srows, rows)
+    //     // setRow((prevRows:any) => [...prevRows, ...data]); 
+    //     console.log(data)
+    // }
+      useEffect(() => {  
+        // console.log(srows,row, data, ...data, defaultValues)
+        // setRow((prev:any)=> [...prev, ...data ])
+        // setRow((prev:any)=>[...rows, ...data]);   
+      
+        if(data) {
+        //     // setCompeleteData((prev:any)=>[...prev, ...compeleteDatas])
+        //     // setRow((prevRows:any) => [...prevRows, ...compeleteDatas]); 
+        //     setRow((pre  
+        // setData((prev: any) => (
+        //     [ ...prev,
+        //         data,]
+        // ))
+        // setRow((prev:any)=>[...rows, ...data]);   
+
+        //     console.log( srows)
         }
-    });
-      const srodws: GridRowsProp = [
-        {
-            // id: 1,
-            name: <RHFTextField name={'name'} />,
-            nesbat: <RHFTextField name={'nesbat'} />,
-            job: <RHFTextField name={'job'} />,
-            address: <RHFTextField name={'address'} />,
-            tel: <RHFTextField name={'tel'} />,
-            col6: <>{renderFooter()}</>,
-        },
-    ];
+    }, [ ]);
+
     const showErrors = (field: string, valueLen: number, min: number) => {
         if (valueLen === 0) {
             return `${field} field is required`
@@ -131,16 +146,18 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
     })
 
     const last_update = new Date()
-    const defaultValues = useMemo(
-        () => ({
+    const defaultValues = 
+    useMemo(
+        () => ([{
             //   activeStep, 
+            id: crypto.randomUUID(),
             last_update,
             name: '',
             nesbat: '',
             job: '',
             address: '',
             tel: '',
-        }),
+        }]),
         []
     );
 
@@ -155,23 +172,34 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
         formState: { isSubmitting, errors },
     } = methods
 
-    const onSubmit = async (compeleteData: any) => {
-        console.log(compeleteData)
-        let res = await fetch("/api/infos", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                data: compeleteData
-            }),
-          });
-          if(res.status===200){
-            // addRow((prev:any)=>({ ...prev, compeleteData}))
-            setRow((prevRows:any) => [...prevRows, compeleteData]); 
-            // setData((prev:any)=>({ ...prev, compeleteData}))
-        }
-          console.log(res.status)
+    const onSubmit = async (compeleteData:any) => {
+        console.log(compeleteData,srows, data, ...data)     
+//     setData((prev: any) => (
+//         [ ...prev,
+//          compeleteData,]
+//  ))
+    // setRow((prev:any)=> [...prev,...data, compeleteData ])
+    // setData((prev:any)=>[compeleteData]);   
+    console.log(srows,data, compeleteData)
+    setRow((prev:any)=>[...rows, compeleteData]);   
+    // setRow(prevRows => [...prevRows, compeleteData]);
+        // let res = await fetch("/api/infos", {
+        //     method: "POST",
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({
+        //     data: compeleteData,
+        //     }),
+        //   })
+        //  console.log(res.body)
+    //      setCompeleteData(compeleteData)
+    //      setData((prev: any) => ({
+    //          ...prev,
+    //          data:compeleteData,
+    //  }))
+    console.log(compeleteDatas)
+
     };
 
     const Accordion = styled(MuiAccordion)<AccordionProps>(({ theme }) => ({
@@ -239,34 +267,7 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
     }
 
     const expandIcon = (value: string) => <Icon icon={expanded === value ? 'tabler:minus' : 'tabler:plus'} />
-    const RepeaterWrapper = styled(CardContent)<CardContentProps>(({ theme }) => ({
-        padding: theme.spacing(1),
-        '& .repeater-wrapper + .repeater-wrapper': {
-            marginTop: theme.spacing(8)
-        },
-        [theme.breakpoints.down('md')]: {
-            paddingTop: theme.spacing(10)
-        },
-        [theme.breakpoints.down('sm')]: {
-            padding: theme.spacing(6)
-        }
-    }))
-    const RepeatingContent = styled(Grid)<GridProps>(({ theme }) => ({
-        paddingRight: 0,
-        [theme.breakpoints.up('sm')]: {
-            display: 'flex',
-        },
-        '& .col-title': {
-            top: '-2.375rem',
-            position: 'absolute'
-        },
-        [theme.breakpoints.down('md')]: {
-            '& .col-title': {
-                top: '0',
-                position: 'relative'
-            }
-        }
-    }))
+
 
     return (
         <Accordion expanded={expanded === 'panel2'} onChange={handleChangeA('panel2')}>
@@ -303,6 +304,7 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
                         )
                     } */}
                 </FormProvider>
+                
             </AccordionDetails>
         </Accordion>
     )

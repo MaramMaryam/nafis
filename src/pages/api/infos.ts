@@ -24,7 +24,10 @@ export default async function handler(req: any, res: any) {
             const database = client.db(databaseName);
             const collection = database.collection(collectionName as any);
 
-            await collection.insertOne(data);
+            await collection.insertOne(data)
+            // res.json(myPost.ops[0]);
+            const savedData = await collection.find({}).toArray()
+            res.status(201).json(savedData)
 
             res.status(200).json({ message: 'data data saved successfully' });
         } catch (error) {

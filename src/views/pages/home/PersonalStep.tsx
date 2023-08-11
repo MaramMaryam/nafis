@@ -64,7 +64,7 @@ const StepPersonalDetails = ({ steps, isEdit, isLoading, onNext }: any) => {
     const [maritalStatus, setMaritalStatus] = useState<string[]>([])
     const [housingStatus, setHousingStatus] = useState<string[]>([])
     const { data, setData, activeStep, setActiveStep } = useContext<any>(UserContext);
-    console.log(data?.data?.personalData, data?.data, data, steps)
+    console.log( data?.data, data, steps)
 
     const showErrors = (field: string, valueLen: number, min: number) => {
         if (valueLen === 0) {
