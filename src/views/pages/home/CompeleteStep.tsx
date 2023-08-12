@@ -28,7 +28,7 @@ import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
 import CustomTable from 'src/@core/components/tables/BasicTables'
 import { GridProps } from '@mui/system'
 import { preventOverflow } from '@popperjs/core'
-
+import {nanoid} from 'nanoid'
 
 const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
     const theme = useTheme()
@@ -36,6 +36,9 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
     const { data, setData, activeStep, setActiveStep } = useContext<any>(UserContext);
     console.log( data?.data, data, steps)
     const [compeleteDatas, setCompeleteData] = useState<any>([])
+    const addRows = ()=> {
+        
+    }
     const renderFooter = () => {
 
         return (
@@ -81,11 +84,13 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
         { field: 'tel', headerName: 'تلفن', width: 110 },
         { field: 'col6', headerName: 'عملیات', width: 110 },
     ];
-    const [row, setRow] = useState<any>();
+    const [row, setRow] = useState<any>(rows);
     console.log(row)
+
     useEffect(()=>{
-    // console.log(row,row[0].name,row[0].id,row[0].nesbat)
-    setRow((prev:any)=>  rows)
+        // console.log(rows)
+    // setRow((prev:any)=>  rows)
+    // setRow((prev:any)=>[...prev, ...data]); 
     },[])
     async function getApiData() {
         const res = await fetch('/api/getInfos', { method: 'GET' });
@@ -106,7 +111,6 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
     //     if(data) {
     //         console.log(data, row)
     // // console.log(...data, ...row)
-
     //     }
     // }, []);
 
@@ -136,14 +140,15 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
     const defaultValues = 
     useMemo(
         () => ({
+            id: '',
             //   activeStep, 
-            id: 1,
             last_update,
             name: '',
             nesbat: '',
             job: '',
             address: '',
             tel: '',
+            col6: renderFooter()
         }),
         []
     );
@@ -160,8 +165,17 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
     } = methods
 
     const onSubmit = async (compeleteData:any) => {
-        console.log(compeleteData,compeleteData.id++,srows, data, ) 
-        setRow((prev:any)=>[...prev, compeleteData]); 
+        console.log(row,'compeleteData:',compeleteData,row, compeleteData.id)
+        compeleteData.id = nanoid(),
+        // setRow((prev:any)=>[...prev, compeleteData]); 
+        console.log(row,'compeleteData:',compeleteData,row, compeleteData.id)
+        // compeleteData.id = nanoid()
+        const compeleteDatas={
+            ...compeleteData, 
+            id: nanoid()
+        }
+        console.log(compeleteDatas)
+        setRow((prev:any)=>[...prev, compeleteDatas]); 
 
         //  let res = await fetch("/api/infos", {
         //         method: "POST",
