@@ -30,21 +30,59 @@ import { GridProps } from '@mui/system'
 import { preventOverflow } from '@popperjs/core'
 import {nanoid} from 'nanoid'
 
-const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
+const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext,  }: any) => {
     const theme = useTheme()
     console.log(allPosts)
     const { data, setData, activeStep, setActiveStep } = useContext<any>(UserContext);
     console.log( data?.data, data, steps)
-    const [compeleteDatas, setCompeleteData] = useState<any>([])
-    const addRows = ()=> {
-        
+    const [compeleteDatas, setCompeleteData] = useState<any>()
+const [rowId, setRowId] = useState<any>()
+function onDelete(id:any) {
+    // delete row with id
+    setRow(row.filter((row:any) => row.id !== id));
+  }
+    // const onSubmit = async (compeleteData:any) => {
+    //     console.log(row,'compeleteData:',compeleteData,row, compeleteData.id)
+    //     compeleteData.id = nanoid(),
+    //     console.log(row,'compeleteData:',compeleteData,row, compeleteData.id)
+    //     const compeleteDatas={
+    //         ...compeleteData, 
+    //         id: nanoid()
+    //     }
+    //     console.log(compeleteDatas)
+    //     setCompeleteData(compeleteDatas)
+    //     setData((prev:any)=> [...prev, compeleteDatas] )
+    //     setRow((prev:any)=>[...prev, compeleteDatas]); 
+    //     setRowId((prev:any)=>compeleteDatas.id)
+       
+    // };
+    const deleteRow = (id:any) => {
+        console.log(rows.filter((row:any) => row.id !== rowId))
+        // setRow((rows:any) => rows.filter((row:any) => row.id !== id));
+    }
+    console.log(rowId)
+
+    const renderDelete = (params?:any) => {
+
+        return (
+            <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
+                <Button 
+                // type='submit'
+                onClick={() => console.log(rows.filter((row:any) => row.id !== rowId))}
+                // onChange={deleteRow}
+                    variant='contained'
+                    color={'error'}
+                >
+                    {'-'}
+                </Button>
+            </Box>
+        )
     }
     const renderFooter = () => {
 
         return (
             <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
                 <Button type='submit'
-                // onClick={addRows}
                     variant='contained'
                     color={'success'}
                 >
@@ -53,18 +91,24 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
             </Box>
         )
     }
-
-    const srows:GridRowsProp = data?.data?.map((item: any) => {
-        return[ {
-            id: crypto.randomUUID(),
-            name: item?.name,
-            nesbat: item?.nesbat,
-            job: item?.job ?? '',
-            address: item?.address ?? '',
-            tel: item?.tel ?? '',
-            col6: <>{renderFooter()}</>,
-        }]
-    });
+    const last_update = new Date()
+    const defaultValues = 
+    useMemo(
+        () => ({
+            id: '',
+            //   activeStep, 
+            last_update,
+            name: '',
+            nesbat: '',
+            job: '',
+            address: '',
+            tel: '',
+            // action: renderDelete(),
+            // delete: ''
+            // renderDelete()
+        }),
+        []
+    );
     const rows: GridRowsProp = [
         {
             id: 1,
@@ -73,24 +117,52 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
             job: <RHFTextField name={'job'} />,
             address: <RHFTextField name={'address'} />,
             tel: <RHFTextField name={'tel'} />,
-            col6: <>{renderFooter()}</>,
+            action: <>{renderFooter()}</>,
+            // delete: <>{renderDelete()}</>,
         },
     ];
+
     const columns: GridColDef[] = [
+        { 
+            field: 'id',
+            headerName: 'id',
+            renderCell: (params:any) => {
+                const id = params.row;
+                setRowId(id)
+                return <>{rowId} </>                
+            }
+          },
         { field: `name`, headerName: 'نام و نام خانوادگی', width: 110 },
         { field: 'nesbat', headerName: 'نسبت', width: 110 },
         { field: 'job', headerName: 'شغل', width: 110 },
         { field: 'address', headerName: 'آدرس محل سکونت', width: 110 },
         { field: 'tel', headerName: 'تلفن', width: 110 },
-        { field: 'col6', headerName: 'عملیات', width: 110 },
+          { 
+            field: 'action',
+            headerName: 'عملیات',
+            // renderCell: (params) => {
+            //     const { id, field, formattedValue } = params;
+            //     console.log(id, field, formattedValue)
+            //     // Use props for customization
+            //   }
+            },
+            // {
+            //     field: 'delete',
+            //     headerName: 'Delete',
+            //     renderCell: (params) => {
+            //       const id = params.row.id;
+              
+            //       return (<Button onClick={() => onDelete(id)}>Delete{id}</Button> )
+            //     }
+            //   }
     ];
     const [row, setRow] = useState<any>(rows);
     console.log(row)
-
     useEffect(()=>{
-        // console.log(rows)
-    // setRow((prev:any)=>  rows)
-    // setRow((prev:any)=>[...prev, ...data]); 
+        console.log(rowId)
+    if(data){
+        console.log(data,compeleteDatas)
+    }
     },[])
     async function getApiData() {
         const res = await fetch('/api/getInfos', { method: 'GET' });
@@ -105,14 +177,6 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
         setRow((prevRows:any) => [...prevRows, ...data]); 
         }
     }
-    //   useEffect(() => {  
-    //     getApiData()
-    //     console.log(data, row)
-    //     if(data) {
-    //         console.log(data, row)
-    // // console.log(...data, ...row)
-    //     }
-    // }, []);
 
     const showErrors = (field: string, valueLen: number, min: number) => {
         if (valueLen === 0) {
@@ -136,23 +200,6 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
             .required()
     })
 
-    const last_update = new Date()
-    const defaultValues = 
-    useMemo(
-        () => ({
-            id: '',
-            //   activeStep, 
-            last_update,
-            name: '',
-            nesbat: '',
-            job: '',
-            address: '',
-            tel: '',
-            col6: renderFooter()
-        }),
-        []
-    );
-
     const methods = useForm({
         resolver: yupResolver(schema),
         defaultValues,
@@ -167,30 +214,28 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
     const onSubmit = async (compeleteData:any) => {
         console.log(row,'compeleteData:',compeleteData,row, compeleteData.id)
         compeleteData.id = nanoid(),
-        // setRow((prev:any)=>[...prev, compeleteData]); 
         console.log(row,'compeleteData:',compeleteData,row, compeleteData.id)
-        // compeleteData.id = nanoid()
         const compeleteDatas={
             ...compeleteData, 
-            id: nanoid()
+            id: nanoid(),
+            action:  <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
+            <Button 
+            // type='submit'
+            onClick={() => {console.log(compeleteDatas.id)
+                setRow((rows:any) => rows.filter((row:any) => row.id !== compeleteDatas.id))}}
+                variant='contained'
+                color={'error'}
+            >
+                {'-'}
+            </Button>
+        </Box>
         }
         console.log(compeleteDatas)
+       
+        setCompeleteData(compeleteDatas)
+        // setData((prev:any)=> [...prev, compeleteDatas] )
         setRow((prev:any)=>[...prev, compeleteDatas]); 
-
-        //  let res = await fetch("/api/infos", {
-        //         method: "POST",
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //         },
-        //         body: JSON.stringify({
-        //              compeleteData
-        //  }),
-        //       }).then((res)=>console.log(res))
-        //       setData((prev: any) => ({
-        //         ...prev,
-        //         compeleteData,
-        // }))
-            //   setRow((prev:any)=>[...prev, ...data]); 
+        // setRowId((prev:any)=>compeleteDatas.id)
     };
 
     const Accordion = styled(MuiAccordion)<AccordionProps>(({ theme }) => ({
@@ -283,17 +328,7 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
                 </Box>
                 <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
                     <CustomTable columns={columns} rows={row} />
-                    {/* {
-                        data && (
-                            // data?.data?.map((items:any, index:number)=> (
-                                // <>{items.name}</>
-                                <CustomTable columns={columns} rows={srows} />
-                            // ))
-                        
-                        )
-                    } */}
                 </FormProvider>
-                
             </AccordionDetails>
         </Accordion>
     )
