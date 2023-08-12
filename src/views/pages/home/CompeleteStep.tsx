@@ -81,11 +81,15 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
         { field: 'tel', headerName: 'تلفن', width: 110 },
         { field: 'col6', headerName: 'عملیات', width: 110 },
     ];
-    const [row, setRow] = useState(rows);
+    const [row, setRow] = useState<any>();
+    console.log(row)
+    useEffect(()=>{
+    // console.log(row,row[0].name,row[0].id,row[0].nesbat)
+    setRow((prev:any)=>  rows)
+    },[])
     async function getApiData() {
         const res = await fetch('/api/getInfos', { method: 'GET' });
         const data = await res.json();
-
         console.log(...data, ...row)
         if (data) {
             setData((prev: any) => ({
@@ -96,17 +100,15 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
         setRow((prevRows:any) => [...prevRows, ...data]); 
         }
     }
-      useEffect(() => {  
-        getApiData()
-        console.log(data, row)
-        if(data) {
-            console.log(data, row)
-    // console.log(...data, ...row)
+    //   useEffect(() => {  
+    //     getApiData()
+    //     console.log(data, row)
+    //     if(data) {
+    //         console.log(data, row)
+    // // console.log(...data, ...row)
 
-        }
-    }, []);
-    console.log(data?.data, row)
-    console.log(data?.data?.map(((t:any)=>t)), row?.map(((d:any)=>d)))
+    //     }
+    // }, []);
 
     const showErrors = (field: string, valueLen: number, min: number) => {
         if (valueLen === 0) {
@@ -159,24 +161,22 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
 
     const onSubmit = async (compeleteData:any) => {
         console.log(compeleteData,compeleteData.id++,srows, data, ) 
-        // setRow((prev:any)=>[...prev, compeleteData]); 
+        setRow((prev:any)=>[...prev, compeleteData]); 
 
-         let res = await fetch("/api/infos", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                     compeleteData
-         }),
-              }).then((res)=>console.log(res))
-              console.log(res, data?.data?.compeleteData)
-              setRow((prev:any)=>[...prev,, compeleteData]); 
-    // console.log(srows,data, compeleteData, rows[0], row[0])
-    // row[0].id=row[0].id++ 
-    // compeleteData.id=compeleteData.id++  
-    // console.log(srows,data, compeleteData, rows, row, rows[0].id)
-
+        //  let res = await fetch("/api/infos", {
+        //         method: "POST",
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //         },
+        //         body: JSON.stringify({
+        //              compeleteData
+        //  }),
+        //       }).then((res)=>console.log(res))
+        //       setData((prev: any) => ({
+        //         ...prev,
+        //         compeleteData,
+        // }))
+            //   setRow((prev:any)=>[...prev, ...data]); 
     };
 
     const Accordion = styled(MuiAccordion)<AccordionProps>(({ theme }) => ({
@@ -242,9 +242,7 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
     const handleChangeA = (panel: string) => (event: SyntheticEvent, isExpanded: boolean) => {
         setExpanded(isExpanded ? panel : false)
     }
-
     const expandIcon = (value: string) => <Icon icon={expanded === value ? 'tabler:minus' : 'tabler:plus'} />
-
 
     return (
         <Accordion expanded={expanded === 'panel2'} onChange={handleChangeA('panel2')}>
