@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { CustomRadioIconsData, CustomRadioIconsProps } from 'src/@core/components/custom-radio/types'
-import { Box, CardContent, CardContentProps, Divider } from '@mui/material'
+import { Box, CardContent, CardContentProps, Divider, TextField } from '@mui/material'
 import CustomChip from 'src/@core/components/mui/chip'
 import MenuItem from '@mui/material/MenuItem'
 import { SelectChangeEvent } from '@mui/material/Select'
@@ -36,18 +36,12 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
     const { data, setData, activeStep, setActiveStep } = useContext<any>(UserContext);
     console.log( data?.data, data, steps)
     const [compeleteDatas, setCompeleteData] = useState<any>([])
-    // const addButton =(compeleteData:any)=> {
-    //     setRow((prevRows:any) => [...prevRows, srows]); 
-    // }
-    // const addButton = (newRow:any) => {
-    //     setRow([...row, newRow]);
-    //   }
     const renderFooter = () => {
 
         return (
             <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
                 <Button type='submit'
-                // onClick={addButton}
+                // onClick={addRows}
                     variant='contained'
                     color={'success'}
                 >
@@ -57,7 +51,7 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
         )
     }
 
-    const srows:GridRowsProp = data?.map((item: any) => {
+    const srows:GridRowsProp = data?.data?.map((item: any) => {
         return[ {
             id: crypto.randomUUID(),
             name: item?.name,
@@ -70,7 +64,7 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
     });
     const rows: GridRowsProp = [
         {
-            id: crypto.randomUUID(),
+            id: 1,
             name: <RHFTextField name={`name`} />,
             nesbat: <RHFTextField name={'nesbat'} />,
             job: <RHFTextField name={'job'} />,
@@ -88,40 +82,31 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
         { field: 'col6', headerName: 'عملیات', width: 110 },
     ];
     const [row, setRow] = useState(rows);
-    // async function getApiData() {
-    //     const res = await fetch('/api/getInfos', { method: 'GET' });
-    //     const data = await res.json();
-    //     console.log(data)
+    async function getApiData() {
+        const res = await fetch('/api/getInfos', { method: 'GET' });
+        const data = await res.json();
 
-    //     if (data) {
-    //         setData((prev: any) => ({
-    //             ...prev,
-    //             data:data,
-    //     }))
-    //     setRow((prevRows:any) => [...prevRows, ...data]); 
-    //     }
-    //     console.log(srows, rows)
-    //     // setRow((prevRows:any) => [...prevRows, ...data]); 
-    //     console.log(data)
-    // }
-      useEffect(() => {  
-        // console.log(srows,row, data, ...data, defaultValues)
-        // setRow((prev:any)=> [...prev, ...data ])
-        // setRow((prev:any)=>[...rows, ...data]);   
-      
-        if(data) {
-        //     // setCompeleteData((prev:any)=>[...prev, ...compeleteDatas])
-        //     // setRow((prevRows:any) => [...prevRows, ...compeleteDatas]); 
-        //     setRow((pre  
-        // setData((prev: any) => (
-        //     [ ...prev,
-        //         data,]
-        // ))
-        // setRow((prev:any)=>[...rows, ...data]);   
-
-        //     console.log( srows)
+        console.log(...data, ...row)
+        if (data) {
+            setData((prev: any) => ({
+                ...prev,
+                data,
+        }))
+    console.log(...data, ...row)
+        setRow((prevRows:any) => [...prevRows, ...data]); 
         }
-    }, [ ]);
+    }
+      useEffect(() => {  
+        getApiData()
+        console.log(data, row)
+        if(data) {
+            console.log(data, row)
+    // console.log(...data, ...row)
+
+        }
+    }, []);
+    console.log(data?.data, row)
+    console.log(data?.data?.map(((t:any)=>t)), row?.map(((d:any)=>d)))
 
     const showErrors = (field: string, valueLen: number, min: number) => {
         if (valueLen === 0) {
@@ -148,16 +133,16 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
     const last_update = new Date()
     const defaultValues = 
     useMemo(
-        () => ([{
+        () => ({
             //   activeStep, 
-            id: crypto.randomUUID(),
+            id: 1,
             last_update,
             name: '',
             nesbat: '',
             job: '',
             address: '',
             tel: '',
-        }]),
+        }),
         []
     );
 
@@ -173,32 +158,24 @@ const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext }: any) => {
     } = methods
 
     const onSubmit = async (compeleteData:any) => {
-        console.log(compeleteData,srows, data, ...data)     
-//     setData((prev: any) => (
-//         [ ...prev,
-//          compeleteData,]
-//  ))
-    // setRow((prev:any)=> [...prev,...data, compeleteData ])
-    // setData((prev:any)=>[compeleteData]);   
-    console.log(srows,data, compeleteData)
-    setRow((prev:any)=>[...rows, compeleteData]);   
-    // setRow(prevRows => [...prevRows, compeleteData]);
-        // let res = await fetch("/api/infos", {
-        //     method: "POST",
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({
-        //     data: compeleteData,
-        //     }),
-        //   })
-        //  console.log(res.body)
-    //      setCompeleteData(compeleteData)
-    //      setData((prev: any) => ({
-    //          ...prev,
-    //          data:compeleteData,
-    //  }))
-    console.log(compeleteDatas)
+        console.log(compeleteData,compeleteData.id++,srows, data, ) 
+        // setRow((prev:any)=>[...prev, compeleteData]); 
+
+         let res = await fetch("/api/infos", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                     compeleteData
+         }),
+              }).then((res)=>console.log(res))
+              console.log(res, data?.data?.compeleteData)
+              setRow((prev:any)=>[...prev,, compeleteData]); 
+    // console.log(srows,data, compeleteData, rows[0], row[0])
+    // row[0].id=row[0].id++ 
+    // compeleteData.id=compeleteData.id++  
+    // console.log(srows,data, compeleteData, rows, row, rows[0].id)
 
     };
 
