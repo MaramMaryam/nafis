@@ -26,6 +26,9 @@ import CustomTable from 'src/@core/components/tables/BasicTables'
 import { GridProps } from '@mui/system'
 import { preventOverflow } from '@popperjs/core'
 import { nanoid } from 'nanoid'
+import RHFDateField from 'src/@core/components/hook-form/RHFDateField'
+import { formatDate } from 'src/@core/utils/format'
+import format from 'date-fns/format';
 
 const EducationStep = ({ allPosts, steps, isEdit, isLoading, onNext, }: any) => {
     const theme = useTheme()
@@ -123,15 +126,15 @@ const EducationStep = ({ allPosts, steps, isEdit, isLoading, onNext, }: any) => 
                     </MenuItem>
                 ))}
             </RHFSelect>,
-            fromDate: <RHFTextField name={'fromDate'} />,
-            toDate: <RHFTextField name={'toDate'} />,
+            fromDate: <RHFDateField name={'fromDate'} />,
+            toDate: <RHFDateField name={'toDate'} />,
             address: <RHFTextField name={'address'} />,
             score: <RHFTextField name={'score'} />,
             action: <>{renderFooter()}</>,
         },
     ];
 
-    const columns: GridColDef[] = [
+    const columns = [
         { field: `grade`, headerName: 'مقطع تحصیلی', width: 110 },
         { field: 'field', headerName: 'رشته تحصیلی', width: 110 },
         { field: 'fromDate', headerName: 'از تاریخ', width: 110 },
@@ -170,11 +173,16 @@ const EducationStep = ({ allPosts, steps, isEdit, isLoading, onNext, }: any) => 
 
     const onSubmit = async (edueData: any) => {
         console.log(row, 'edueData:', edueData, row, edueData.id)
+        console.log(formatDate(edueData.fromDate))
+
+
         edueData.id = nanoid(),
             console.log(row, 'edueData:', edueData, row, edueData.id)
         const edueDatas = {
             ...edueData,
             id: nanoid(),
+            fromDate: format(edueData.fromDate, 'MM/dd/yyyy'),
+            toDate: format(edueData.toDate, 'MM/dd/yyyy'),
             action: <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
                 <Button
                     // type='submit'

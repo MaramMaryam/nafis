@@ -15,35 +15,7 @@ const Home = () => {
         <StepPersonalDetails />
         <CompeleteStep />
         <EducationStep />
-        {/* <Card>
-          <CardHeader sx={{ '& .css-x8z8fw-MuiTypography-root': { color: 'red' } }} title='🚀مشخصات فردی'></CardHeader>
-          <CardContent>
-            <Typography sx={{ mb: 2 }}></Typography>
-
-          </CardContent>
-        </Card> */}
-      </Grid>
-      <Grid item xs={12}>
-        <Card>
-          <CardHeader sx={{ '& .css-x8z8fw-MuiTypography-root': { color: 'red' } }} title='🔒مشخصات تکمیلی'></CardHeader>
-          <CardContent>
-            <Typography sx={{ mb: 2 }}>
-
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
-
-      <Grid item xs={12}>
-        <Card>
-          <CardHeader sx={{ '& .css-x8z8fw-MuiTypography-root': { color: 'red' } }} title='🔒سوابق تحصیلی'></CardHeader>
-          <CardContent>
-            <Typography sx={{ mb: 2 }}>
-
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
+      </Grid> 
     </Grid>
   )
 }

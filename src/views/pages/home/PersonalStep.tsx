@@ -2,7 +2,6 @@ import { useState, ChangeEvent, useEffect, useMemo, useContext, SyntheticEvent }
 import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import { CustomRadioIconsData, CustomRadioIconsProps } from 'src/@core/components/custom-radio/types'
 import { Box } from '@mui/material'
 import CustomChip from 'src/@core/components/mui/chip'
 import MenuItem from '@mui/material/MenuItem'
@@ -21,50 +20,13 @@ import { styled } from '@mui/material/styles'
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion'
 import MuiAccordionSummary, { AccordionSummaryProps } from '@mui/material/AccordionSummary'
 import MuiAccordionDetails, { AccordionDetailsProps } from '@mui/material/AccordionDetails'
-import { useSettings } from 'src/@core/hooks/useSettings'
-import themeConfig from 'src/configs/themeConfig'
-
-const datas: CustomRadioIconsData[] = [
-    {
-        value: 'builder',
-        isSelected: true,
-        content: 'List property as Builder, list your project and get highest reach.',
-        title: (
-            <Typography variant='h6' sx={{ mb: 1 }}>
-                I am the Builder
-            </Typography>
-        )
-    },
-    {
-        value: 'owner',
-        content: 'Submit property as an Individual. Lease, Rent or Sell at the best price.',
-        title: (
-            <Typography variant='h6' sx={{ mb: 1 }}>
-                I am the Owner
-            </Typography>
-        )
-    },
-    {
-        value: 'broker',
-        content: 'Earn highest commission by listing your clients properties at the best price.',
-        title: (
-            <Typography variant='h6' sx={{ mb: 1 }}>
-                I am the Broker
-            </Typography>
-        )
-    }
-]
 
 const StepPersonalDetails = ({ steps, isEdit, isLoading, onNext }: any) => {
-    const { settings } = useSettings()
-    console.log(settings.direction, themeConfig.direction)
     const maritalStatusArray = ['مجرد', 'متاهل', 'متارکه']
     const housingStatusArray = ['استیجاری', 'شخصی']
-    const theme = useTheme()
     const [maritalStatus, setMaritalStatus] = useState<string[]>([])
     const [housingStatus, setHousingStatus] = useState<string[]>([])
     const { data, setData, activeStep, setActiveStep } = useContext<any>(UserContext);
-    console.log( data?.data, data, steps)
 
     const showErrors = (field: string, valueLen: number, min: number) => {
         if (valueLen === 0) {
@@ -96,7 +58,6 @@ const StepPersonalDetails = ({ steps, isEdit, isLoading, onNext }: any) => {
     const last_update = new Date()
     const defaultValues = useMemo(
         () => ({
-            //   activeStep, 
             last_update,
             email: '',
             lastName: '',
@@ -118,39 +79,10 @@ const StepPersonalDetails = ({ steps, isEdit, isLoading, onNext }: any) => {
         formState: { isSubmitting, errors },
     } = methods
 
-    // const onSubmits = async (values: any) => {
-    //     console.log(values, values.personalData);
-    //     setData((prev: any) => ({ steps: steps, ...data?.data?.values, ...prev, personalData: values?.personalData }));
-    //     setActiveStep(activeStep + 1)
-    // }
-
     const onSubmit = async (personalData: any) => {
         console.log(personalData)
-
-        // try {
-        //     await fetch('/api/createProfile', {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //         },
-        //         body: JSON.stringify({
-        //             step: steps[0].id,
-        //             data: personalData,
-        //             steps,
-        //             last_update
-        //         }),
-        //     });
-        //     setData((prev: any) => ({
-        //         ...prev, ...data,
-        //         step: steps[0].id,
-        //         step0: personalData,
-        //         last_update,
-        //         steps
-        //     }))
-        //     onNext();
-        // } catch (error) {
-        //     console.error('Error saving data:', error);
-        // }
+        setExpanded(false)
+        toast.success('اطلاعات با موفقیت ثبت شد')
     };
     const renderFooter = () => {
 
@@ -243,8 +175,6 @@ const StepPersonalDetails = ({ steps, isEdit, isLoading, onNext }: any) => {
     }
 
     const expandIcon = (value: string) => <Icon icon={expanded === value ? 'tabler:minus' : 'tabler:plus'} />
-
-
 
     return (
         <Accordion expanded={expanded === 'panel1'} onChange={handleChangeA('panel1')}>
