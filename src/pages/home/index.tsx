@@ -6,6 +6,7 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import StepPersonalDetails from 'src/views/pages/home/PersonalStep'
 import CompeleteStep from 'src/views/pages/home/CompeleteStep'
+import EducationStep from 'src/views/pages/home/EducationStep'
 
 const Home = () => {
   return (
@@ -13,6 +14,7 @@ const Home = () => {
       <Grid item xs={12}>
         <StepPersonalDetails />
         <CompeleteStep />
+        <EducationStep />
         {/* <Card>
           <CardHeader sx={{ '& .css-x8z8fw-MuiTypography-root': { color: 'red' } }} title='🚀مشخصات فردی'></CardHeader>
           <CardContent>

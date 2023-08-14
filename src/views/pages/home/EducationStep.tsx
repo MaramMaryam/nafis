@@ -21,57 +21,22 @@ import { styled } from '@mui/material/styles'
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion'
 import MuiAccordionSummary, { AccordionSummaryProps } from '@mui/material/AccordionSummary'
 import MuiAccordionDetails, { AccordionDetailsProps } from '@mui/material/AccordionDetails'
-import { useSettings } from 'src/@core/hooks/useSettings'
-import themeConfig from 'src/configs/themeConfig'
-import TableBasic from 'src/@core/components/tables/BasicTables'
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
 import CustomTable from 'src/@core/components/tables/BasicTables'
 import { GridProps } from '@mui/system'
 import { preventOverflow } from '@popperjs/core'
-import {nanoid} from 'nanoid'
+import { nanoid } from 'nanoid'
 
-const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext,  }: any) => {
+const EducationStep = ({ allPosts, steps, isEdit, isLoading, onNext, }: any) => {
     const theme = useTheme()
     console.log(allPosts)
     const { data, setData, activeStep, setActiveStep } = useContext<any>(UserContext);
-    console.log( data?.data, data, steps)
-    const [compeleteDatas, setCompeleteData] = useState<any>()
-const [rowId, setRowId] = useState<any>()
-function onDelete(id:any) {
-    // delete row with id
-    setRow(row.filter((row:any) => row.id !== id));
-  }
-    // const onSubmit = async (compeleteData:any) => {
-    //     console.log(row,'compeleteData:',compeleteData,row, compeleteData.id)
-    //     compeleteData.id = nanoid(),
-    //     console.log(row,'compeleteData:',compeleteData,row, compeleteData.id)
-    //     const compeleteDatas={
-    //         ...compeleteData, 
-    //         id: nanoid()
-    //     }
-    //     console.log(compeleteDatas)
-    //     setCompeleteData(compeleteDatas)
-    //     setData((prev:any)=> [...prev, compeleteDatas] )
-    //     setRow((prev:any)=>[...prev, compeleteDatas]); 
-    //     setRowId((prev:any)=>compeleteDatas.id)
-    // };
+    console.log(data?.data, data, steps)
+    const [edueDatas, setEduData] = useState<any>()
+    const [rowId, setRowId] = useState<any>()
+    const gradeArray = ['دیپلم', 'فوق دیپلم', 'لیسانس', 'فوق لیسانس', 'دکتری و بالاتر']
+    const fieldArray = ['نرم افزار', 'شبکه', 'آی تی', 'سخت افزار', 'برنامه نویسی']
 
-    const renderDelete = (params?:any) => {
-
-        return (
-            <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
-                <Button 
-                // type='submit'
-                onClick={() => console.log(rows.filter((row:any) => row.id !== rowId))}
-                // onChange={deleteRow}
-                    variant='contained'
-                    color={'error'}
-                >
-                    {'-'}
-                </Button>
-            </Box>
-        )
-    }
     const renderFooter = () => {
 
         return (
@@ -86,102 +51,110 @@ function onDelete(id:any) {
         )
     }
     const last_update = new Date()
-    const defaultValues = 
-    useMemo(
-        () => ({
-            id: '',
-            //   activeStep, 
-            last_update,
-            name: '',
-            nesbat: '',
-            job: '',
-            address: '',
-            tel: '',
-            // action: renderDelete(),
-            // delete: ''
-            // renderDelete()
-        }),
-        []
-    );
+    const defaultValues =
+        useMemo(
+            () => ({
+                id: '',
+                last_update,
+                grade: '',
+                field: '',
+                fromDate: '',
+                toDate: '',
+                address: '',
+                score: '',
+            }),
+            []
+        );
+    const [grade, setGrade] = useState<string[]>([])
+    const [field, setField] = useState<string[]>([])
+
+    const handleChange = (event: SelectChangeEvent<typeof grade>) => {
+        const {
+            target: { value }
+        } = event
+        setGrade(typeof value === 'string' ? value.split(',') : value)
+    }
+    const handleChangefld = (event: SelectChangeEvent<typeof field>) => {
+        const {
+            target: { value }
+        } = event
+        setField(typeof value === 'string' ? value.split(',') : value)
+    }
     const rows: GridRowsProp = [
         {
             id: 1,
-            name: <RHFTextField name={`name`} />,
-            nesbat: <RHFTextField name={'nesbat'} />,
-            job: <RHFTextField name={'job'} />,
+            grade: <RHFSelect name={'grade'} SelectProps={{
+                multiple: false,
+                value: grade,
+                onChange: (e: any) => handleChange(e as SelectChangeEvent<typeof grade>),
+                renderValue: (selected: any) => (
+                    <Box
+                        sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, }}
+                    >
+                        {(selected as string[]).map(value => (
+                            <CustomChip rounded key={value} label={value} skin='light' />
+                        ))}
+                    </Box>
+                )
+            }}>
+                {gradeArray.map((grade: any) => (
+                    <MenuItem key={grade} value={grade} sx={{ flexDirection: 'row-reverse' }}>
+                        {grade}
+                    </MenuItem>
+                ))}
+            </RHFSelect>,
+            field: <RHFSelect name={'field'} SelectProps={{
+                multiple: false,
+                value: field,
+                onChange: (e: any) => handleChangefld(e as SelectChangeEvent<typeof field>),
+                renderValue: (selected: any) => (
+                    <Box
+                        sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, }}
+                    >
+                        {(selected as string[]).map(value => (
+                            <CustomChip rounded key={value} label={value} skin='light' />
+                        ))}
+                    </Box>
+                )
+            }}>
+                {fieldArray.map((field: any) => (
+                    <MenuItem key={field} value={field} sx={{ flexDirection: 'row-reverse' }}>
+                        {field}
+                    </MenuItem>
+                ))}
+            </RHFSelect>,
+            fromDate: <RHFTextField name={'fromDate'} />,
+            toDate: <RHFTextField name={'toDate'} />,
             address: <RHFTextField name={'address'} />,
-            tel: <RHFTextField name={'tel'} />,
+            score: <RHFTextField name={'score'} />,
             action: <>{renderFooter()}</>,
         },
     ];
 
     const columns: GridColDef[] = [
-        { field: `name`, headerName: 'نام و نام خانوادگی', width: 110 },
-        { field: 'nesbat', headerName: 'نسبت', width: 110 },
-        { field: 'job', headerName: 'شغل', width: 110 },
-        { field: 'address', headerName: 'آدرس محل سکونت', width: 110 },
-        { field: 'tel', headerName: 'تلفن', width: 110 },
-          { 
+        { field: `grade`, headerName: 'مقطع تحصیلی', width: 110 },
+        { field: 'field', headerName: 'رشته تحصیلی', width: 110 },
+        { field: 'fromDate', headerName: 'از تاریخ', width: 110 },
+        { field: 'toDate', headerName: 'تا تاریخ', width: 110 },
+        { field: 'address', headerName: 'آدرس', width: 110 },
+        { field: 'score', headerName: 'معدل', width: 110 },
+        {
             field: 'action',
             headerName: 'عملیات',
-            // renderCell: (params) => {
-            //     const { id, field, formattedValue } = params;
-            //     console.log(id, field, formattedValue)
-            //     // Use props for customization
-            //   }
-            },
-            // {
-            //     field: 'delete',
-            //     headerName: 'Delete',
-            //     renderCell: (params) => {
-            //       const id = params.row.id;
-              
-            //       return (<Button onClick={() => onDelete(id)}>Delete{id}</Button> )
-            //     }
-            //   }
+        },
     ];
     const [row, setRow] = useState<any>(rows);
-    console.log(row)
-    useEffect(()=>{
-        console.log(rowId)
-    if(data){
-        console.log(data,compeleteDatas)
-    }
-    },[])
-    async function getApiData() {
-        const res = await fetch('/api/getInfos', { method: 'GET' });
-        const data = await res.json();
-        console.log(...data, ...row)
-        if (data) {
-            setData((prev: any) => ({
-                ...prev,
-                data,
-        }))
-    console.log(...data, ...row)
-        setRow((prevRows:any) => [...prevRows, ...data]); 
-        }
-    }
 
-    const showErrors = (field: string, valueLen: number, min: number) => {
-        if (valueLen === 0) {
-            return `${field} field is required`
-        } else if (valueLen > 0 && valueLen < min) {
-            return `${field} must be at least ${min} characters`
-        } else {
-            return ''
+    useEffect(() => {
+        console.log(rowId)
+        if (data) {
+            console.log(data, edueDatas)
         }
-    }
+    }, [])
 
     const schema = yup.object().shape({
-        job: yup.string().required(),
-        name: yup
-            .string()
-            .min(3, obj => showErrors('name', obj.value.length, obj.min))
-            .required(),
-        nesbat: yup
-            .string()
-            .min(3, obj => showErrors('nesbat', obj.value.length, obj.min))
-            .required()
+        grade: yup.string().required(),
+        field: yup.string().required(),
     })
 
     const methods = useForm({
@@ -195,30 +168,32 @@ function onDelete(id:any) {
         formState: { isSubmitting, errors },
     } = methods
 
-    const onSubmit = async (compeleteData:any) => {
-        console.log(row,'compeleteData:',compeleteData,row, compeleteData.id)
-        compeleteData.id = nanoid(),
-        console.log(row,'compeleteData:',compeleteData,row, compeleteData.id)
-        const compeleteDatas={
-            ...compeleteData, 
+    const onSubmit = async (edueData: any) => {
+        console.log(row, 'edueData:', edueData, row, edueData.id)
+        edueData.id = nanoid(),
+            console.log(row, 'edueData:', edueData, row, edueData.id)
+        const edueDatas = {
+            ...edueData,
             id: nanoid(),
-            action:  <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
-            <Button 
-            // type='submit'
-            onClick={() => {console.log(compeleteDatas.id)
-                setRow((rows:any) => rows.filter((row:any) => row.id !== compeleteDatas.id))}}
-                variant='contained'
-                color={'error'}
-            >
-                {'-'}
-            </Button>
-        </Box>
+            action: <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
+                <Button
+                    // type='submit'
+                    onClick={() => {
+                        console.log(edueData.id)
+                        setRow((rows: any) => rows.filter((row: any) => row.id !== edueDatas.id))
+                    }}
+                    variant='contained'
+                    color={'error'}
+                >
+                    {'-'}
+                </Button>
+            </Box>
         }
-        console.log(compeleteDatas)
-       
-        setCompeleteData(compeleteDatas)
+        console.log(edueDatas)
+
+        setEduData(edueDatas)
         // setData((prev:any)=> [...prev, compeleteDatas] )
-        setRow((prev:any)=>[...prev, compeleteDatas]); 
+        setRow((prev: any) => [...prev, edueDatas]);
         // setRowId((prev:any)=>compeleteDatas.id)
     };
 
@@ -280,7 +255,7 @@ function onDelete(id:any) {
         padding: `${theme.spacing(4)} !important`
     }))
 
-    const [expanded, setExpanded] = useState<string | false>('panel2')
+    const [expanded, setExpanded] = useState<string | false>('panel3')
 
     const handleChangeA = (panel: string) => (event: SyntheticEvent, isExpanded: boolean) => {
         setExpanded(isExpanded ? panel : false)
@@ -288,23 +263,23 @@ function onDelete(id:any) {
     const expandIcon = (value: string) => <Icon icon={expanded === value ? 'tabler:minus' : 'tabler:plus'} />
 
     return (
-        <Accordion expanded={expanded === 'panel2'} onChange={handleChangeA('panel2')}>
+        <Accordion expanded={expanded === 'panel3'} onChange={handleChangeA('panel3')}>
             <AccordionSummary
-                id='customized-panel-header-2'
-                expandIcon={expandIcon('panel2')}
-                aria-controls='customized-panel-content-2'
+                id='customized-panel-header-3'
+                expandIcon={expandIcon('panel3')}
+                aria-controls='customized-panel-content-3'
             >
                 <Icon fontSize='1.25rem' icon='tabler:user' color='red' />
-                <Typography sx={{ ml: 2, color: 'red' }}>🚀مشخصات تکمیلی</Typography>
+                <Typography sx={{ ml: 2, color: 'red' }}>🚀مشخصات تحصیلی</Typography>
             </AccordionSummary>
             <AccordionDetails>
                 <Typography sx={{ color: 'green' }}>
-                    مشخصات خانوادگی:
+                    سوابق تحصیلی
                 </Typography>
                 <Divider sx={{ backgroundColor: 'green', my: 2, mb: 2 }} />
                 <Box sx={{ my: 5 }}>
                     <Typography>
-                        کاربر گرامی، لطفااطلاعات مربوط به مشخصات خانوادگی(در صورت تاهل، مشخصات همسر و فرزندان و سپس والدین) را وارد نموده، سپس دکمه ثبت را کلیک نمایید.
+                        کاربر گرامی، لطفااطلاعات مربوط به مشخصات تحصیلی(در صورت تاهل، مشخصات همسر و فرزندان و سپس والدین) را وارد نموده، سپس دکمه ثبت را کلیک نمایید.
                     </Typography>
                     <Typography>
                         در صورت مشاهده خطا در اطلاعات وارد شده پس از ثبت آن، می توانید ردیف مورد نظر را حذف کرده و دوباره آن را ثبت کنید.
@@ -318,18 +293,4 @@ function onDelete(id:any) {
     )
 }
 
-export default CompeleteStep
-
-// export async function getServerSideProps(context:any) {
-//     let res = await fetch("http://localhost:3000/api/infos", {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     });
-//     let allPosts = await res.json();
-  
-//     return {
-//       props: { allPosts },
-//     };
-//   }
+export default EducationStep
