@@ -26,7 +26,6 @@ const StepPersonalDetails = ({ steps, isEdit, isLoading, onNext }: any) => {
     const housingStatusArray = ['استیجاری', 'شخصی']
     const [maritalStatus, setMaritalStatus] = useState<string[]>([])
     const [housingStatus, setHousingStatus] = useState<string[]>([])
-    const { data, setData, activeStep, setActiveStep } = useContext<any>(UserContext);
 
     const showErrors = (field: string, valueLen: number, min: number) => {
         if (valueLen === 0) {
@@ -255,7 +254,6 @@ const StepPersonalDetails = ({ steps, isEdit, isLoading, onNext }: any) => {
                 </FormProvider>
             </AccordionDetails>
         </Accordion>
-
     )
 }
 

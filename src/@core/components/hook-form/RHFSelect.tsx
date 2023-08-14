@@ -1,7 +1,6 @@
 import { useFormContext, Controller } from 'react-hook-form';
 import React from 'react';
 import CustomTextField from 'src/@core/components/mui/text-field';
-import { useTheme } from '@mui/material/styles'
 
 
 interface RHFSelectProps {
@@ -15,9 +14,8 @@ interface RHFSelectProps {
     placeholder?: any
 };
 
-export default function RHFSelect({ name, children, defaultValue, onSelect, onClick, SelectProps, label, placeholder, ...other }: RHFSelectProps) {
+export default function RHFSelect({ name, children, label, placeholder, ...other }: RHFSelectProps) {
     const { control } = useFormContext();
-    const theme = useTheme()
     return (
         <Controller
             name={name}
@@ -29,7 +27,7 @@ export default function RHFSelect({ name, children, defaultValue, onSelect, onCl
                     '& .MuiSelect-iconOpen': { position: 'relative', marginLeft: 2, flexDirection: 'row-reverse' }
                 }} fullWidth
                     {...field} select error={!!error}
-                    helperText={error?.message} defaultValue='' label={label} placeholder={placeholder} id='custom-select'{...other}>
+                    helperText={error?.message} label={label} placeholder={placeholder} id='custom-select'{...other}>
                     {children}
                 </CustomTextField>
             )}

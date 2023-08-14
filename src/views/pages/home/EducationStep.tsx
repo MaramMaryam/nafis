@@ -1,15 +1,12 @@
 import { useState, ChangeEvent, useEffect, useMemo, useContext, SyntheticEvent } from 'react'
-import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import { CustomRadioIconsData, CustomRadioIconsProps } from 'src/@core/components/custom-radio/types'
 import { Box, CardContent, CardContentProps, Divider, TextField } from '@mui/material'
 import CustomChip from 'src/@core/components/mui/chip'
 import MenuItem from '@mui/material/MenuItem'
 import { SelectChangeEvent } from '@mui/material/Select'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
-import toast from 'react-hot-toast'
 import { yupResolver } from '@hookform/resolvers/yup'
 import Button from '@mui/material/Button'
 import Icon from 'src/@core/components/icon'
@@ -21,19 +18,16 @@ import { styled } from '@mui/material/styles'
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion'
 import MuiAccordionSummary, { AccordionSummaryProps } from '@mui/material/AccordionSummary'
 import MuiAccordionDetails, { AccordionDetailsProps } from '@mui/material/AccordionDetails'
-import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
+import { GridRowsProp } from '@mui/x-data-grid';
 import CustomTable from 'src/@core/components/tables/BasicTables'
-import { GridProps } from '@mui/system'
-import { preventOverflow } from '@popperjs/core'
 import { nanoid } from 'nanoid'
 import RHFDateField from 'src/@core/components/hook-form/RHFDateField'
 import { formatDate } from 'src/@core/utils/format'
 import format from 'date-fns/format';
 
 const EducationStep = ({ allPosts, steps, isEdit, isLoading, onNext, }: any) => {
-    const theme = useTheme()
     console.log(allPosts)
-    const { data, setData, activeStep, setActiveStep } = useContext<any>(UserContext);
+    const { data } = useContext<any>(UserContext);
     console.log(data?.data, data, steps)
     const [edueDatas, setEduData] = useState<any>()
     const [rowId, setRowId] = useState<any>()
@@ -172,12 +166,8 @@ const EducationStep = ({ allPosts, steps, isEdit, isLoading, onNext, }: any) => 
     } = methods
 
     const onSubmit = async (edueData: any) => {
-        console.log(row, 'edueData:', edueData, row, edueData.id)
-        console.log(formatDate(edueData.fromDate))
+        edueData.id = nanoid()
 
-
-        edueData.id = nanoid(),
-            console.log(row, 'edueData:', edueData, row, edueData.id)
         const edueDatas = {
             ...edueData,
             id: nanoid(),
@@ -185,7 +175,6 @@ const EducationStep = ({ allPosts, steps, isEdit, isLoading, onNext, }: any) => 
             toDate: format(edueData.toDate, 'MM/dd/yyyy'),
             action: <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
                 <Button
-                    // type='submit'
                     onClick={() => {
                         console.log(edueData.id)
                         setRow((rows: any) => rows.filter((row: any) => row.id !== edueDatas.id))
@@ -200,9 +189,7 @@ const EducationStep = ({ allPosts, steps, isEdit, isLoading, onNext, }: any) => 
         console.log(edueDatas)
 
         setEduData(edueDatas)
-        // setData((prev:any)=> [...prev, compeleteDatas] )
         setRow((prev: any) => [...prev, edueDatas]);
-        // setRowId((prev:any)=>compeleteDatas.id)
     };
 
     const Accordion = styled(MuiAccordion)<AccordionProps>(({ theme }) => ({

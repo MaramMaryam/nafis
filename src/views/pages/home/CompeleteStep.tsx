@@ -1,60 +1,28 @@
 import { useState, ChangeEvent, useEffect, useMemo, useContext, SyntheticEvent } from 'react'
-import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import { CustomRadioIconsData, CustomRadioIconsProps } from 'src/@core/components/custom-radio/types'
-import { Box, CardContent, CardContentProps, Divider, TextField } from '@mui/material'
-import CustomChip from 'src/@core/components/mui/chip'
-import MenuItem from '@mui/material/MenuItem'
-import { SelectChangeEvent } from '@mui/material/Select'
-import { useForm, Controller } from 'react-hook-form'
+import { Box, Divider } from '@mui/material'
+import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
-import toast from 'react-hot-toast'
 import { yupResolver } from '@hookform/resolvers/yup'
 import Button from '@mui/material/Button'
 import Icon from 'src/@core/components/icon'
 import RHFTextField from 'src/@core/components/hook-form/RHFTextField'
 import UserContext from 'src/@core/context/userContext'
 import FormProvider from 'src/@core/components/hook-form/FormProvider'
-import RHFSelect from 'src/@core/components/hook-form/RHFSelect'
 import { styled } from '@mui/material/styles'
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion'
 import MuiAccordionSummary, { AccordionSummaryProps } from '@mui/material/AccordionSummary'
 import MuiAccordionDetails, { AccordionDetailsProps } from '@mui/material/AccordionDetails'
-import { useSettings } from 'src/@core/hooks/useSettings'
-import themeConfig from 'src/configs/themeConfig'
-import TableBasic from 'src/@core/components/tables/BasicTables'
-import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
+import {  GridRowsProp, GridColDef } from '@mui/x-data-grid';
 import CustomTable from 'src/@core/components/tables/BasicTables'
-import { GridProps } from '@mui/system'
-import { preventOverflow } from '@popperjs/core'
 import {nanoid} from 'nanoid'
 
-const CompeleteStep = ({ allPosts, steps, isEdit, isLoading, onNext,  }: any) => {
-    const theme = useTheme()
-    console.log(allPosts)
+const CompeleteStep = ({ steps, isEdit, isLoading, onNext,  }: any) => {
     const { data, setData, activeStep, setActiveStep } = useContext<any>(UserContext);
     console.log( data?.data, data, steps)
     const [compeleteDatas, setCompeleteData] = useState<any>()
 const [rowId, setRowId] = useState<any>()
-function onDelete(id:any) {
-    // delete row with id
-    setRow(row.filter((row:any) => row.id !== id));
-  }
-    // const onSubmit = async (compeleteData:any) => {
-    //     console.log(row,'compeleteData:',compeleteData,row, compeleteData.id)
-    //     compeleteData.id = nanoid(),
-    //     console.log(row,'compeleteData:',compeleteData,row, compeleteData.id)
-    //     const compeleteDatas={
-    //         ...compeleteData, 
-    //         id: nanoid()
-    //     }
-    //     console.log(compeleteDatas)
-    //     setCompeleteData(compeleteDatas)
-    //     setData((prev:any)=> [...prev, compeleteDatas] )
-    //     setRow((prev:any)=>[...prev, compeleteDatas]); 
-    //     setRowId((prev:any)=>compeleteDatas.id)
-    // };
 
     const renderDelete = (params?:any) => {
 
@@ -124,21 +92,7 @@ function onDelete(id:any) {
           { 
             field: 'action',
             headerName: 'عملیات',
-            // renderCell: (params) => {
-            //     const { id, field, formattedValue } = params;
-            //     console.log(id, field, formattedValue)
-            //     // Use props for customization
-            //   }
             },
-            // {
-            //     field: 'delete',
-            //     headerName: 'Delete',
-            //     renderCell: (params) => {
-            //       const id = params.row.id;
-              
-            //       return (<Button onClick={() => onDelete(id)}>Delete{id}</Button> )
-            //     }
-            //   }
     ];
     const [row, setRow] = useState<any>(rows);
     console.log(row)
